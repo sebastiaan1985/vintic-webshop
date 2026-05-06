@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Afrekenen — Vintic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600;700&family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --navy: #0E1F3D;
+      --navy-dark: #060D1A;
+      --gold: #C8A951;
+      --bg: #F4F5F9;
+      --surface: #FFFFFF;
+      --text: #0E1F3D;
+      --muted: #6B7480;
+      --border: #E4E7EE;
+      --success: #166534;
+      --success-bg: #F0FDF4;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Nunito Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ── HEADER ── */
+    .header {
+      background: var(--navy-dark);
+      border-bottom: 1px solid rgba(200,169,81,0.12);
+      padding: 0 1.5rem;
+    }
+    .header-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 0;
+    }
+    .logo-img { height: 34px; object-fit: contain; }
+    .logo-text { font-family: 'Rubik', sans-serif; font-weight: 600; font-size: 1.4rem; letter-spacing: -0.02em; color: #fff; }
+    .logo-dot { color: var(--gold); }
+    .header-back {
+      display: flex; align-items: center; gap: 0.5rem;
+      color: rgba(255,255,255,0.5); font-size: 0.8rem; font-weight: 600;
+      text-decoration: none; transition: color 0.2s;
+    }
+    .header-back:hover { color: var(--gold); }
+    .header-secure {
+      display: flex; align-items: center; gap: 0.4rem;
+      color: rgba(255,255,255,0.4); font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.05em; text-transform: uppercase;
+    }
+
+    /* ── PROGRESS ── */
+    .progress-bar {
+      background: #fff; border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+    }
+    .progress-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; gap: 0; padding: 1rem 0;
+    }
+    .progress-step {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-size: 0.78rem; font-weight: 700;
+      color: var(--muted); white-space: nowrap;
+    }
+    .progress-step.active { color: var(--navy); }
+    .progress-step.done { color: var(--success); }
+    .step-num {
+      width: 26px; height: 26px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 800;
+      background: #E4E7EE; color: var(--muted);
+      flex-shrink: 0; transition: all 0.3s;
+    }
+    .progress-step.active .step-num { background: var(--navy); color: #fff; }
+    .progress-step.done .step-num { background: var(--success); color: #fff; }
+    .progress-divider {
+      flex: 1; height: 1px; background: var(--border);
+      margin: 0 0.75rem; min-width: 20px;
+    }
+
+    /* ── LAYOUT ── */
+    .checkout-layout {
+      max-width: 1100px; margin: 2rem auto;
+      padding: 0 1.5rem 4rem;
+      display: grid; grid-template-columns: 1fr 380px; gap: 2rem;
+    }
+    @media (max-width: 900px) {
+      .checkout-layout { grid-template-columns: 1fr; }
+      .order-summary { order: -1; position: static !important; }
+    }
+
+    /* ── CARDS ── */
+    .card {
+      background: #fff; border-radius: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-title {
+      font-family: 'Rubik', sans-serif; font-size: 0.95rem;
+      font-weight: 700; color: var(--navy);
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    .card-title svg { color: var(--gold); }
+    .card-body { padding: 1.5rem; }
+
+    /* ── FORM ── */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-label {
+      font-size: 0.72rem; font-weight: 800;
+      letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+    }
+    .form-input {
+      border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 0.7rem 0.9rem; font-size: 0.88rem;
+      font-family: 'Nunito Sans', sans-serif; color: var(--text);
+      background: #fff; transition: all 0.2s; outline: none;
+    }
+    .form-input:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(14,31,61,0.06); }
+    .form-input.error { border-color: #DC2626; }
+    .form-input::placeholder { color: #C4C9D4; }
+    .form-select {
+      border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 0.7rem 0.9rem; font-size: 0.88rem;
+      font-family: 'Nunito Sans', sans-serif; color: var(--text);
+      background: #fff; cursor: pointer; outline: none; transition: all 0.2s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%236B7480' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 0.9rem center;
+      padding-right: 2.5rem;
+    }
+    .form-select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(14,31,61,0.06); }
+    .error-msg { font-size: 0.7rem; color: #DC2626; font-weight: 600; display: none; }
+
+    /* ── PAYMENT OPTIONS ── */
+    .payment-options { display: flex; flex-direction: column; gap: 0.75rem; }
+    .payment-option {
+      border: 1.5px solid var(--border); border-radius: 12px;
+      padding: 1rem 1.1rem; cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .payment-option:hover { border-color: var(--navy); background: #F7F8FB; }
+    .payment-option.selected { border-color: var(--navy); background: #F0F3FA; }
+    .payment-option input[type="radio"] { display: none; }
+    .radio-circle {
+      width: 20px; height: 20px; border-radius: 50%;
+      border: 2px solid var(--border); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .payment-option.selected .radio-circle { border-color: var(--navy); background: var(--navy); }
+    .radio-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #fff; opacity: 0; transition: opacity 0.2s;
+    }
+    .payment-option.selected .radio-dot { opacity: 1; }
+    .payment-icon {
+      width: 44px; height: 28px; border-radius: 5px;
+      border: 1px solid var(--border); object-fit: contain;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem; font-weight: 800; background: #F7F8FB;
+      flex-shrink: 0;
+    }
+    .payment-name { font-weight: 700; font-size: 0.85rem; color: var(--text); }
+    .payment-sub { font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; }
+    .payment-extra { margin-top: 1rem; display: none; }
+    .payment-extra.show { display: block; }
+
+    /* ── ORDER SUMMARY ── */
+    .summary-item {
+      display: flex; gap: 0.75rem; align-items: flex-start;
+      padding: 0.85rem 0; border-bottom: 1px solid var(--border);
+    }
+    .summary-item:last-child { border-bottom: none; }
+    .summary-img {
+      width: 56px; height: 56px; border-radius: 8px;
+      object-fit: contain; background: var(--bg); flex-shrink: 0;
+      padding: 3px; border: 1px solid var(--border);
+    }
+    .summary-info { flex: 1; min-width: 0; }
+    .summary-title { font-size: 0.78rem; font-weight: 600; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .summary-meta { font-size: 0.68rem; color: var(--muted); margin-top: 0.2rem; }
+    .summary-qty {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      background: var(--bg); border-radius: 6px; padding: 0.2rem 0.5rem;
+      font-size: 0.72rem; font-weight: 700; margin-top: 0.4rem; color: var(--navy);
+    }
+    .summary-empty {
+      padding: 2rem; text-align: center; color: var(--muted); font-size: 0.85rem;
+    }
+
+    .totals-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.5rem 0; font-size: 0.82rem;
+    }
+    .totals-row.total {
+      border-top: 2px solid var(--border); margin-top: 0.5rem; padding-top: 1rem;
+      font-family: 'Rubik', sans-serif; font-weight: 700; font-size: 1rem; color: var(--navy);
+    }
+    .totals-row .label { color: var(--muted); font-weight: 600; }
+    .totals-free { color: var(--success); font-weight: 700; }
+
+    /* ── TRUST BADGES ── */
+    .trust-badges {
+      display: flex; flex-direction: column; gap: 0.6rem;
+      padding-top: 1rem; border-top: 1px solid var(--border); margin-top: 1rem;
+    }
+    .trust-item {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-size: 0.72rem; font-weight: 600; color: var(--muted);
+    }
+    .trust-item svg { color: var(--success); flex-shrink: 0; }
+
+    /* ── SUBMIT BTN ── */
+    .submit-btn {
+      width: 100%; padding: 1rem;
+      background: var(--navy); color: #fff;
+      border: none; border-radius: 12px; cursor: pointer;
+      font-family: 'Rubik', sans-serif; font-size: 1rem; font-weight: 700;
+      transition: all 0.25s; display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+      letter-spacing: 0.01em;
+    }
+    .submit-btn:hover { background: var(--navy-dark); box-shadow: 0 8px 32px rgba(14,31,61,0.25); transform: translateY(-1px); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+    .submit-btn.loading { pointer-events: none; }
+
+    /* ── CONFIRMATION PAGE ── */
+    .confirmation {
+      max-width: 600px; margin: 4rem auto;
+      padding: 0 1.5rem; text-align: center; display: none;
+    }
+    .confirm-icon {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: var(--success-bg); border: 3px solid #BBF7D0;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.5rem;
+      animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes scaleIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .confirm-num {
+      display: inline-block; background: rgba(200,169,81,0.12);
+      border: 1px solid rgba(200,169,81,0.3);
+      border-radius: 999px; padding: 0.3rem 1rem;
+      font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 1rem;
+    }
+    .confirm-title {
+      font-family: 'Rubik', sans-serif; font-size: 1.8rem;
+      font-weight: 700; color: var(--navy); margin-bottom: 0.75rem;
+    }
+    .confirm-sub { font-size: 0.9rem; color: var(--muted); line-height: 1.8; max-width: 420px; margin: 0 auto; }
+
+    .confirm-summary {
+      background: #fff; border-radius: 16px; border: 1px solid var(--border);
+      padding: 1.5rem; margin-top: 2rem; text-align: left;
+    }
+    .confirm-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.25rem;
+    }
+    .confirm-detail { background: var(--bg); border-radius: 10px; padding: 0.85rem; }
+    .confirm-detail-label { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+    .confirm-detail-val { font-size: 0.85rem; font-weight: 600; color: var(--text); margin-top: 0.3rem; line-height: 1.5; }
+
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      margin-top: 2rem; background: var(--navy); color: #fff;
+      padding: 0.85rem 2rem; border-radius: 999px; text-decoration: none;
+      font-family: 'Rubik', sans-serif; font-weight: 600; font-size: 0.88rem;
+      transition: all 0.2s;
+    }
+    .back-btn:hover { background: var(--navy-dark); box-shadow: 0 8px 24px rgba(14,31,61,0.25); }
+
+    /* ── PROMO BANNER ── */
+    .promo-banner { background: linear-gradient(90deg,#0E1F3D,#162B52,#0E1F3D); color: rgba(255,255,255,.85); font-size: .72rem; font-weight: 600; padding: .5rem 1rem; text-align: center; letter-spacing: .04em; display: flex; align-items: center; justify-content: center; gap: 1.5rem; }
+    .promo-banner span { display: flex; align-items: center; gap: .4rem; }
+    .promo-banner svg { color: var(--gold); }
+
+    /* ── PAYMENT OPTION ENHANCED ── */
+    .payment-option { position: relative; }
+    .payment-badge { position: absolute; top: -8px; right: 10px; background: var(--gold); color: var(--navy-dark); font-size: .55rem; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; padding: .15rem .5rem; border-radius: 999px; }
+
+    /* ── PROCESSING OVERLAY ── */
+    .processing-overlay { position: fixed; inset: 0; background: rgba(6,13,26,.85); backdrop-filter: blur(8px); z-index: 999; display: none; align-items: center; justify-content: center; }
+    .processing-overlay.show { display: flex; }
+    .processing-box { background: #fff; border-radius: 24px; padding: 2.5rem 2rem; text-align: center; max-width: 360px; width: 90%; }
+    .processing-steps { display: flex; flex-direction: column; gap: .75rem; margin: 1.5rem 0; text-align: left; }
+    .proc-step { display: flex; align-items: center; gap: .75rem; font-size: .82rem; font-weight: 600; color: var(--muted); }
+    .proc-step.done { color: var(--success); }
+    .proc-step.active { color: var(--navy); font-weight: 700; }
+    .proc-icon { width: 28px; height: 28px; border-radius: 50%; background: var(--bg); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .3s; }
+    .proc-step.done .proc-icon { background: var(--success); border-color: var(--success); color: #fff; }
+    .proc-step.active .proc-icon { background: var(--navy); border-color: var(--navy); color: #fff; animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(14,31,61,.4)} 50%{box-shadow:0 0 0 8px rgba(14,31,61,0)} }
+
+    /* ── CONFIRMATION ENHANCED ── */
+    .confirm-confetti { font-size: 2.5rem; margin-bottom: .5rem; animation: bounce .6s cubic-bezier(.34,1.56,.64,1) .2s both; }
+    @keyframes bounce { from{transform:scale(0) rotate(-10deg);opacity:0} to{transform:scale(1) rotate(0);opacity:1} }
+    .confirm-steps { display: flex; justify-content: center; gap: 1.5rem; margin: 1.5rem 0; flex-wrap: wrap; }
+    .confirm-step-item { display: flex; flex-direction: column; align-items: center; gap: .4rem; }
+    .confirm-step-icon { width: 44px; height: 44px; border-radius: 50%; background: #F0FDF4; border: 2px solid #BBF7D0; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+    .confirm-step-label { font-size: .65rem; font-weight: 700; color: var(--muted); text-align: center; max-width: 70px; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-up { animation: fadeUp 0.35s ease both; }
+
+    /* ── SPINNER ── */
+    .spinner { width: 20px; height: 20px; border: 2.5px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<!-- PROMO BANNER -->
+<div class="promo-banner">
+  <span><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Gratis verzending</span>
+  <span><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Beveiligde betaling via SSL</span>
+  <span><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>14 dagen gratis retour</span>
+</div>
+
+<!-- PROCESSING OVERLAY -->
+<div class="processing-overlay" id="processingOverlay">
+  <div class="processing-box">
+    <div style="font-size:2rem;margin-bottom:.5rem">🔐</div>
+    <div style="font-family:'Rubik',sans-serif;font-weight:700;font-size:1.1rem;color:var(--navy);margin-bottom:.25rem">Betaling verwerken</div>
+    <div style="font-size:.78rem;color:var(--muted)">Even geduld, we verwerken uw bestelling</div>
+    <div class="processing-steps" id="processingSteps">
+      <div class="proc-step" id="pStep1">
+        <div class="proc-icon">1</div><span>Gegevens verifiëren</span>
+      </div>
+      <div class="proc-step" id="pStep2">
+        <div class="proc-icon">2</div><span>Betaling verwerken</span>
+      </div>
+      <div class="proc-step" id="pStep3">
+        <div class="proc-icon">3</div><span>Bestelling bevestigen</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" style="text-decoration:none">
+      <img src="assets/logo.png" alt="Vintic" class="logo-img"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+      <div class="logo-text" style="display:none">vin<span class="logo-dot">&#9679;</span>tic</div>
+    </a>
+    <a href="index.html" class="header-back">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Terug naar winkel
+    </a>
+    <div class="header-secure">
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Beveiligd afrekenen
+    </div>
+  </div>
+</header>
+
+<!-- PROGRESS -->
+<div class="progress-bar" id="progressBar">
+  <div class="progress-inner">
+    <div class="progress-step active" id="step1">
+      <div class="step-num" id="step1num">1</div>
+      Gegevens
+    </div>
+    <div class="progress-divider"></div>
+    <div class="progress-step" id="step2">
+      <div class="step-num" id="step2num">2</div>
+      Betaling
+    </div>
+    <div class="progress-divider"></div>
+    <div class="progress-step" id="step3">
+      <div class="step-num" id="step3num">3</div>
+      Bevestiging
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT FORM -->
+<div class="checkout-layout" id="checkoutLayout">
+
+  <!-- LEFT: FORM -->
+  <div style="display:flex;flex-direction:column;gap:1.25rem">
+
+    <!-- Persoonlijke gegevens -->
+    <div class="card fade-up" style="animation-delay:.05s">
+      <div class="card-header">
+        <div class="card-title">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Persoonlijke gegevens
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Voornaam *</label>
+            <input class="form-input" type="text" id="voornaam" placeholder="Jan" autocomplete="given-name">
+            <span class="error-msg" id="err-voornaam">Vul je voornaam in</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Achternaam *</label>
+            <input class="form-input" type="text" id="achternaam" placeholder="de Vries" autocomplete="family-name">
+            <span class="error-msg" id="err-achternaam">Vul je achternaam in</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">E-mailadres *</label>
+            <input class="form-input" type="email" id="email" placeholder="jan@email.nl" autocomplete="email">
+            <span class="error-msg" id="err-email">Vul een geldig e-mailadres in</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Telefoonnummer</label>
+            <input class="form-input" type="tel" id="telefoon" placeholder="+31 6 12345678" autocomplete="tel">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bezorgadres -->
+    <div class="card fade-up" style="animation-delay:.1s">
+      <div class="card-header">
+        <div class="card-title">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Bezorgadres
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Straat *</label>
+            <input class="form-input" type="text" id="straat" placeholder="Keizersgracht" autocomplete="address-line1">
+            <span class="error-msg" id="err-straat">Vul je straat in</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Huisnummer *</label>
+            <input class="form-input" type="text" id="huisnummer" placeholder="123A" autocomplete="address-line2">
+            <span class="error-msg" id="err-huisnummer">Vul je huisnummer in</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Postcode *</label>
+            <input class="form-input" type="text" id="postcode" placeholder="1234 AB" autocomplete="postal-code" oninput="formatPostcode(this)">
+            <span class="error-msg" id="err-postcode">Vul een geldige postcode in</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Woonplaats *</label>
+            <input class="form-input" type="text" id="woonplaats" placeholder="Amsterdam" autocomplete="address-level2">
+            <span class="error-msg" id="err-woonplaats">Vul je woonplaats in</span>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Land</label>
+            <select class="form-select" id="land" autocomplete="country">
+              <option value="NL" selected>🇳🇱 Nederland</option>
+              <option value="BE">🇧🇪 België</option>
+              <option value="DE">🇩🇪 Duitsland</option>
+              <option value="LU">🇱🇺 Luxemburg</option>
+              <option value="FR">🇫🇷 Frankrijk</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label style="display:flex;align-items:center;gap:.6rem;cursor:pointer;font-size:.82rem;font-weight:600;color:var(--text)">
+              <input type="checkbox" id="factuurAdres" style="width:16px;height:16px;border-radius:4px;accent-color:var(--navy);cursor:pointer">
+              Factuuradres wijkt af van bezorgadres
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bezorgmethode -->
+    <div class="card fade-up" style="animation-delay:.15s">
+      <div class="card-header">
+        <div class="card-title">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          Bezorgmethode
+        </div>
+      </div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:.75rem">
+        <label class="payment-option selected" onclick="selectShipping(this, 'standaard')">
+          <input type="radio" name="shipping" value="standaard" checked>
+          <div class="radio-circle"><div class="radio-dot"></div></div>
+          <div style="display:flex;align-items:center;gap:.75rem;flex:1">
+            <div style="width:40px;height:28px;background:#F0F3FA;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="18" height="18" fill="none" stroke="#1E3A6B" stroke-width="1.8" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            </div>
+            <div>
+              <div class="payment-name">Standaard bezorging</div>
+              <div class="payment-sub">2-4 werkdagen · PostNL / DPD</div>
+            </div>
+          </div>
+          <div style="font-family:'Rubik',sans-serif;font-weight:700;font-size:.9rem;color:var(--success);flex-shrink:0">Gratis</div>
+        </label>
+        <label class="payment-option" onclick="selectShipping(this, 'express')">
+          <input type="radio" name="shipping" value="express">
+          <div class="radio-circle"><div class="radio-dot"></div></div>
+          <div style="display:flex;align-items:center;gap:.75rem;flex:1">
+            <div style="width:40px;height:28px;background:#FFF7ED;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="18" height="18" fill="none" stroke="#C2410C" stroke-width="1.8" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <div>
+              <div class="payment-name">Express bezorging</div>
+              <div class="payment-sub">Morgen in huis — voor 23:00 besteld</div>
+            </div>
+          </div>
+          <div style="font-family:'Rubik',sans-serif;font-weight:700;font-size:.9rem;color:var(--navy);flex-shrink:0">€ 4,95</div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Betaalmethode -->
+    <div class="card fade-up" style="animation-delay:.2s">
+      <div class="card-header">
+        <div class="card-title">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          Betaalmethode
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="payment-options">
+
+          <!-- iDEAL -->
+          <label class="payment-option selected" onclick="selectPayment(this, 'ideal')">
+            <span class="payment-badge">Meest gekozen</span>
+            <input type="radio" name="payment" value="ideal" checked>
+            <div class="radio-circle"><div class="radio-dot"></div></div>
+            <div class="payment-icon" style="background:#fff;padding:2px">
+              <img src="images/ideal-wero.png" alt="iDEAL | wero" style="height:28px;width:auto;object-fit:contain">
+            </div>
+            <div>
+              <div class="payment-name">iDEAL</div>
+              <div class="payment-sub">Direct betalen via uw bank</div>
+            </div>
+            <div class="payment-extra show" id="extra-ideal" style="margin-left:auto" onclick="event.stopPropagation()">
+              <select class="form-select" style="font-size:.78rem;padding:.4rem .8rem;width:auto">
+                <option>Kies uw bank</option>
+                <option>ABN AMRO</option>
+                <option>ING</option>
+                <option>Rabobank</option>
+                <option>SNS Bank</option>
+                <option>ASN Bank</option>
+                <option>Bunq</option>
+                <option>Knab</option>
+                <option>Triodos</option>
+              </select>
+            </div>
+          </label>
+
+          <!-- Creditcard -->
+          <label class="payment-option" onclick="selectPayment(this, 'card')">
+            <input type="radio" name="payment" value="card">
+            <div class="radio-circle"><div class="radio-dot"></div></div>
+            <div style="display:flex;gap:.4rem;align-items:center">
+              <div class="payment-icon" style="background:#fff;padding:2px">
+                <svg width="40" height="24" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+                  <text x="50" y="46" font-family="Arial Black,Arial" font-weight="900" font-size="42" fill="#1A1F71" text-anchor="middle" letter-spacing="-1">VISA</text>
+                </svg>
+              </div>
+              <div class="payment-icon" style="background:#fff;padding:2px">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" style="width:32px;height:20px;object-fit:contain">
+              </div>
+            </div>
+            <div>
+              <div class="payment-name">Creditcard</div>
+              <div class="payment-sub">Visa, Mastercard, American Express</div>
+            </div>
+          </label>
+
+          <!-- Klarna -->
+          <label class="payment-option" onclick="selectPayment(this, 'klarna')">
+            <input type="radio" name="payment" value="klarna">
+            <div class="radio-circle"><div class="radio-dot"></div></div>
+            <div class="payment-icon" style="background:#FFB3C7;padding:3px 4px">
+              <svg width="44" height="20" viewBox="0 0 110 50" xmlns="http://www.w3.org/2000/svg">
+                <text x="4" y="38" font-family="Arial,sans-serif" font-weight="700" font-size="30" fill="#000">klarna</text>
+              </svg>
+            </div>
+            <div>
+              <div class="payment-name">Klarna — Achteraf betalen</div>
+              <div class="payment-sub">Betaal na ontvangst, 30 dagen</div>
+            </div>
+          </label>
+
+          <!-- PayPal -->
+          <label class="payment-option" onclick="selectPayment(this, 'paypal')">
+            <input type="radio" name="payment" value="paypal">
+            <div class="radio-circle"><div class="radio-dot"></div></div>
+            <div class="payment-icon" style="background:#fff;padding:2px">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" style="width:48px;height:20px;object-fit:contain">
+            </div>
+            <div>
+              <div class="payment-name">PayPal</div>
+              <div class="payment-sub">Betaal met uw PayPal account</div>
+            </div>
+          </label>
+
+        </div>
+
+        <!-- Card extra fields -->
+        <div id="extra-card" class="payment-extra" style="margin-top:1rem">
+          <div class="form-row">
+            <div class="form-group full">
+              <label class="form-label">Kaartnummer</label>
+              <input class="form-input" type="text" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Vervaldatum</label>
+              <input class="form-input" type="text" placeholder="MM/JJ" maxlength="5" oninput="formatExpiry(this)">
+            </div>
+            <div class="form-group">
+              <label class="form-label">CVV</label>
+              <input class="form-input" type="text" placeholder="123" maxlength="4">
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Opmerking -->
+    <div class="card fade-up" style="animation-delay:.25s">
+      <div class="card-header">
+        <div class="card-title">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Opmerking (optioneel)
+        </div>
+      </div>
+      <div class="card-body">
+        <textarea class="form-input" rows="3" placeholder="Heeft u een opmerking over uw bestelling?" style="resize:vertical;min-height:80px"></textarea>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <button class="submit-btn fade-up" id="submitBtn" onclick="placeOrder()" style="animation-delay:.3s">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      <span id="submitText">Bestelling plaatsen</span>
+      <div class="spinner" id="submitSpinner"></div>
+    </button>
+
+    <p style="font-size:.72rem;color:var(--muted);text-align:center;line-height:1.7;margin-top:-.5rem">
+      Door te bestellen ga je akkoord met onze <a href="#" style="color:var(--navy);font-weight:700">algemene voorwaarden</a> en het <a href="#" style="color:var(--navy);font-weight:700">privacybeleid</a>.
+    </p>
+  </div>
+
+  <!-- RIGHT: ORDER SUMMARY -->
+  <div class="order-summary" style="display:flex;flex-direction:column;gap:1.25rem;align-self:start;position:sticky;top:1.5rem" id="orderSummaryCol">
+    <div class="card fade-up" style="animation-delay:.1s">
+      <div class="card-header">
+        <div class="card-title">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          Jouw bestelling
+        </div>
+        <a href="index.html" style="font-size:.72rem;font-weight:700;color:var(--muted);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--navy)'" onmouseout="this.style.color='var(--muted)'">Wijzigen</a>
+      </div>
+      <div class="card-body" style="padding-top:.5rem;padding-bottom:.5rem">
+        <div id="summaryItems">
+          <div class="summary-empty">Je winkelmandje is leeg</div>
+        </div>
+      </div>
+      <div class="card-body" style="border-top:1px solid var(--border)">
+        <div class="totals-row">
+          <span class="label">Subtotaal</span>
+          <span id="subtotal" style="font-weight:700">—</span>
+        </div>
+        <div class="totals-row">
+          <span class="label">Verzending</span>
+          <span class="totals-free" id="shippingCost">Gratis</span>
+        </div>
+        <div class="totals-row">
+          <span class="label">BTW (21%)</span>
+          <span id="vatAmount" style="font-weight:600">—</span>
+        </div>
+        <div class="totals-row total">
+          <span>Totaal</span>
+          <span id="totalAmount">—</span>
+        </div>
+        <div class="trust-badges">
+          <div class="trust-item">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Gratis verzending bij alle bestellingen
+          </div>
+          <div class="trust-item">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            14 dagen bedenktijd & gratis retour
+          </div>
+          <div class="trust-item">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Beveiligde betaling via SSL
+          </div>
+          <div class="trust-item">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Klantenservice 7 dagen per week
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kortingscode -->
+    <div class="card fade-up" style="animation-delay:.15s">
+      <div class="card-body" style="padding:1rem 1.5rem">
+        <div style="font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem">Kortingscode</div>
+        <div style="display:flex;gap:.5rem">
+          <input class="form-input" type="text" placeholder="Voer code in" style="flex:1;font-size:.82rem" id="couponInput">
+          <button onclick="applyCoupon()" style="background:var(--navy);color:#fff;border:none;border-radius:10px;padding:.6rem 1rem;font-size:.78rem;font-weight:700;cursor:pointer;font-family:'Rubik',sans-serif;white-space:nowrap;transition:background .2s" onmouseover="this.style.background='var(--navy-dark)'" onmouseout="this.style.background='var(--navy)'">Toepassen</button>
+        </div>
+        <div id="couponMsg" style="font-size:.72rem;margin-top:.5rem;display:none"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- CONFIRMATION PAGE -->
+<div class="confirmation" id="confirmationPage">
+  <div class="confirm-confetti">🎉</div>
+  <div class="confirm-icon">
+    <svg width="36" height="36" fill="none" stroke="#166534" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+  <div class="confirm-num" id="confirmOrderNum">BESTELLING #VT-000000</div>
+  <h1 class="confirm-title">Bedankt voor je bestelling!</h1>
+  <p class="confirm-sub">Een bevestiging is verstuurd naar <strong id="confirmEmail"></strong>. Je pakket wordt zo snel mogelijk verzonden.</p>
+
+  <div class="confirm-steps">
+    <div class="confirm-step-item"><div class="confirm-step-icon">📧</div><div class="confirm-step-label">Bevestigingsmail verstuurd</div></div>
+    <div class="confirm-step-item"><div class="confirm-step-icon">📦</div><div class="confirm-step-label">Bestelling wordt verwerkt</div></div>
+    <div class="confirm-step-item"><div class="confirm-step-icon">🚚</div><div class="confirm-step-label">Bezorgd binnen 2-4 dagen</div></div>
+  </div>
+
+  <div class="confirm-summary">
+    <div style="font-family:'Rubik',sans-serif;font-weight:700;color:var(--navy);margin-bottom:.25rem">Besteldetails</div>
+    <div style="font-size:.78rem;color:var(--muted)">Bewaar dit als referentie</div>
+    <div class="confirm-grid" id="confirmGrid"></div>
+  </div>
+
+  <div id="confirmItems" style="background:#fff;border-radius:16px;border:1px solid var(--border);padding:1.5rem;margin-top:1.25rem;text-align:left"></div>
+
+  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2rem">
+    <a href="index.html" class="back-btn">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Verder winkelen
+    </a>
+    <a href="index.html" style="display:inline-flex;align-items:center;gap:.5rem;margin-top:0;background:transparent;border:1.5px solid var(--border);color:var(--navy);padding:.85rem 2rem;border-radius:999px;text-decoration:none;font-family:'Rubik',sans-serif;font-weight:600;font-size:.88rem;transition:all .2s" onmouseover="this.style.borderColor='var(--navy)'" onmouseout="this.style.borderColor='var(--border)'">
+      Bestelling volgen
+    </a>
+  </div>
+</div>
+
+<script src="data/products.js"></script>
+<script>
+// ─── CART ───────────────────────────────────────────────────────────
+let cart = JSON.parse(localStorage.getItem('vintic_cart') || '[]');
+let shippingMethod = 'standaard';
+let selectedPayment = 'ideal';
+let discount = 0;
+
+function totalItems() { return cart.reduce((s, i) => s + i.qty, 0); }
+
+function itemPrice(item) {
+  if (item.prijs) return item.prijs;
+  const p = PRODUCTS.find(pr => pr.ean === item.ean);
+  return p ? p.prijs : 0;
+}
+
+function calcSubtotal() {
+  return cart.reduce((s, i) => s + i.qty * itemPrice(i), 0);
+}
+
+function formatEuro(n) {
+  return '€ ' + n.toFixed(2).replace('.', ',');
+}
+
+function renderSummary() {
+  const el = document.getElementById('summaryItems');
+
+  if (!cart.length) {
+    el.innerHTML = '<div class="summary-empty">Je winkelmandje is leeg</div>';
+    document.getElementById('subtotal').textContent = '—';
+    document.getElementById('vatAmount').textContent = '—';
+    document.getElementById('totalAmount').textContent = '—';
+    return;
+  }
+
+  el.innerHTML = cart.map(item => {
+    const p = PRODUCTS.find(pr => pr.ean === item.ean);
+    const img = item.fotoUrl || (item.foto1 ? `images/${item.foto1}` : '');
+    return `
+    <div class="summary-item">
+      <img class="summary-img" src="${img}" alt="" onerror="this.style.background='#e8ecf4'">
+      <div class="summary-info">
+        <div class="summary-title">${item.titel}</div>
+        <div class="summary-meta">${[item.merk !== 'Merkloos' ? item.merk : '', item.materiaal].filter(Boolean).join(' · ')}</div>
+        <div class="summary-qty">
+          <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          ${item.qty}x
+        </div>
+      </div>
+      <div style="font-family:'Rubik',sans-serif;font-weight:700;font-size:.85rem;color:var(--navy);white-space:nowrap;flex-shrink:0">
+        ${formatEuro(item.qty * itemPrice(item))}
+      </div>
+    </div>`;
+  }).join('');
+
+  updateTotals();
+}
+
+function updateTotals() {
+  const sub = calcSubtotal() - discount;
+  const shipping = shippingMethod === 'express' ? 4.95 : 0;
+  const total = sub + shipping;
+  const vat = total * 0.21 / 1.21;
+
+  document.getElementById('subtotal').textContent = formatEuro(sub);
+  document.getElementById('vatAmount').textContent = formatEuro(vat);
+  document.getElementById('shippingCost').textContent = shipping > 0 ? formatEuro(shipping) : 'Gratis';
+  document.getElementById('shippingCost').className = shipping > 0 ? 'totals-free' : 'totals-free';
+  if (shipping > 0) document.getElementById('shippingCost').style.color = 'var(--text)';
+  else document.getElementById('shippingCost').style.color = 'var(--success)';
+  document.getElementById('totalAmount').textContent = formatEuro(total);
+}
+
+// ─── SHIPPING / PAYMENT SELECT ───────────────────────────────────────
+function selectShipping(el, method) {
+  document.querySelectorAll('[name="shipping"]').closest
+    ? null : null;
+  document.querySelectorAll('label[onclick*="selectShipping"]').forEach(l => l.classList.remove('selected'));
+  el.classList.add('selected');
+  shippingMethod = method;
+  updateTotals();
+}
+
+function selectPayment(el, method) {
+  document.querySelectorAll('label[onclick*="selectPayment"]').forEach(l => l.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedPayment = method;
+  document.querySelectorAll('.payment-extra').forEach(e => e.classList.remove('show'));
+  const extra = document.getElementById('extra-' + method);
+  if (extra) extra.classList.add('show');
+}
+
+// ─── COUPON ──────────────────────────────────────────────────────────
+const COUPONS = { 'VINTIC10': 0.10, 'WELKOM5': 5, 'GRATIS': 0 };
+function applyCoupon() {
+  const code = document.getElementById('couponInput').value.trim().toUpperCase();
+  const msg = document.getElementById('couponMsg');
+  if (COUPONS[code] !== undefined) {
+    const pct = COUPONS[code];
+    discount = pct < 1 ? calcSubtotal() * pct : pct;
+    msg.style.color = 'var(--success)';
+    msg.textContent = `✓ Code "${code}" toegepast!`;
+    msg.style.display = 'block';
+  } else {
+    discount = 0;
+    msg.style.color = '#DC2626';
+    msg.textContent = 'Ongeldige kortingscode';
+    msg.style.display = 'block';
+  }
+  updateTotals();
+}
+
+// ─── POSTCODE FORMAT ─────────────────────────────────────────────────
+function formatPostcode(el) {
+  let v = el.value.replace(/\s/g, '').toUpperCase();
+  if (v.length > 4) v = v.slice(0, 4) + ' ' + v.slice(4, 6);
+  el.value = v;
+}
+
+function formatCard(el) {
+  let v = el.value.replace(/\D/g, '').slice(0, 16);
+  el.value = v.replace(/(.{4})/g, '$1 ').trim();
+}
+
+function formatExpiry(el) {
+  let v = el.value.replace(/\D/g, '').slice(0, 4);
+  if (v.length >= 2) v = v.slice(0, 2) + '/' + v.slice(2);
+  el.value = v;
+}
+
+// ─── VALIDATION ──────────────────────────────────────────────────────
+function validate() {
+  const fields = [
+    { id: 'voornaam', err: 'err-voornaam', check: v => v.length >= 2 },
+    { id: 'achternaam', err: 'err-achternaam', check: v => v.length >= 2 },
+    { id: 'email', err: 'err-email', check: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) },
+    { id: 'straat', err: 'err-straat', check: v => v.length >= 2 },
+    { id: 'huisnummer', err: 'err-huisnummer', check: v => v.length >= 1 },
+    { id: 'postcode', err: 'err-postcode', check: v => /^\d{4}\s?[A-Z]{2}$/.test(v.toUpperCase()) },
+    { id: 'woonplaats', err: 'err-woonplaats', check: v => v.length >= 2 },
+  ];
+
+  let valid = true;
+  fields.forEach(f => {
+    const el = document.getElementById(f.id);
+    const errEl = document.getElementById(f.err);
+    const ok = f.check(el.value.trim());
+    el.classList.toggle('error', !ok);
+    errEl.style.display = ok ? 'none' : 'block';
+    if (!ok) { valid = false; if (valid === false && !window._firstErr) { window._firstErr = el; } }
+  });
+
+  if (!valid && window._firstErr) {
+    window._firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    window._firstErr = null;
+  }
+  return valid;
+}
+
+// ─── PLACE ORDER ─────────────────────────────────────────────────────
+function placeOrder() {
+  if (!validate()) return;
+  if (!cart.length) { alert('Je winkelmandje is leeg'); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  document.getElementById('submitText').textContent = 'Verwerken...';
+  document.getElementById('submitSpinner').style.display = 'block';
+
+  // Show processing overlay with animated steps
+  const overlay = document.getElementById('processingOverlay');
+  overlay.classList.add('show');
+  setStep(2);
+
+  const steps = [
+    { id: 'pStep1', delay: 0, duration: 900 },
+    { id: 'pStep2', delay: 950, duration: 1000 },
+    { id: 'pStep3', delay: 2000, duration: 700 },
+  ];
+
+  steps.forEach(({ id, delay, duration }) => {
+    setTimeout(() => {
+      document.getElementById(id).classList.add('active');
+      document.getElementById(id).querySelector('.proc-icon').innerHTML =
+        '<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>';
+    }, delay);
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      el.classList.remove('active');
+      el.classList.add('done');
+      el.querySelector('.proc-icon').innerHTML =
+        '<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+    }, delay + duration);
+  });
+
+  setTimeout(() => {
+    overlay.classList.remove('show');
+    setStep(3);
+    showConfirmation();
+    localStorage.removeItem('vintic_cart');
+  }, 3000);
+}
+
+function setStep(n) {
+  for (let i = 1; i <= 3; i++) {
+    const step = document.getElementById('step' + i);
+    const num = document.getElementById('step' + i + 'num');
+    if (i < n) {
+      step.className = 'progress-step done';
+      num.innerHTML = '<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+    } else if (i === n) {
+      step.className = 'progress-step active';
+      num.textContent = i;
+    } else {
+      step.className = 'progress-step';
+      num.textContent = i;
+    }
+  }
+}
+
+function showConfirmation() {
+  document.getElementById('checkoutLayout').style.display = 'none';
+  const conf = document.getElementById('confirmationPage');
+  conf.style.display = 'block';
+
+  const orderNum = 'VT-' + Math.floor(100000 + Math.random() * 900000);
+  document.getElementById('confirmOrderNum').textContent = 'BESTELLING #' + orderNum;
+  document.getElementById('confirmEmail').textContent = document.getElementById('email').value;
+
+  // Details grid
+  const grid = document.getElementById('confirmGrid');
+  const naam = document.getElementById('voornaam').value + ' ' + document.getElementById('achternaam').value;
+  const adres = document.getElementById('straat').value + ' ' + document.getElementById('huisnummer').value;
+  const pc = document.getElementById('postcode').value;
+  const plaats = document.getElementById('woonplaats').value;
+  const payNames = { ideal: 'iDEAL', card: 'Creditcard', klarna: 'Klarna', paypal: 'PayPal' };
+  const shipNames = { standaard: 'Standaard (2-4 werkdagen)', express: 'Express (morgen)' };
+
+  grid.innerHTML = [
+    ['Naam', naam],
+    ['Bezorgadres', adres + '<br>' + pc + ' ' + plaats],
+    ['Betaalmethode', payNames[selectedPayment] || selectedPayment],
+    ['Bezorgmethode', shipNames[shippingMethod]],
+  ].map(([l, v]) => `
+    <div class="confirm-detail">
+      <div class="confirm-detail-label">${l}</div>
+      <div class="confirm-detail-val">${v}</div>
+    </div>`).join('');
+
+  // Items
+  const items = document.getElementById('confirmItems');
+  items.innerHTML = `<div style="font-family:'Rubik',sans-serif;font-weight:700;color:var(--navy);margin-bottom:1rem">Bestelde artikelen (${totalItems()})</div>` +
+    cart.map(item => `
+    <div class="summary-item">
+      <img class="summary-img" src="${item.fotoUrl || 'images/' + item.foto1}" alt="" onerror="this.style.background='#e8ecf4'">
+      <div class="summary-info">
+        <div class="summary-title">${item.titel}</div>
+        <div class="summary-meta">${item.materiaal || ''}</div>
+        <div class="summary-qty">${item.qty}×</div>
+      </div>
+      <div style="font-family:'Rubik',sans-serif;font-weight:700;font-size:.88rem;color:var(--navy)">${formatEuro(item.qty * itemPrice(item))}</div>
+    </div>`).join('');
+
+  conf.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────
+renderSummary();
+</script>
+</body>
+</html>

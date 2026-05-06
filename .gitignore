@@ -1,0 +1,6 @@
+scrape-prices.js
+scrape-images.js
+.DS_Store
+*.log
+outputs/
+node_modules/
