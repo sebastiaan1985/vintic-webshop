@@ -683,7 +683,7 @@ function addToCart(ean, e) {
   const p = PRODUCTS.find(pr => pr.ean === ean); if (!p) return;
   const ex = cart.find(i => i.ean === ean);
   if (ex) ex.qty++;
-  else cart.push({ ean, qty:1, titel:p.titel, foto1:p.foto1, merk:p.merk, materiaal:p.materiaal, prijs:p.prijs });
+  else cart.push({ ean, qty:1, titel:p.titel, foto1:p.foto1, fotoUrl:p.fotoUrl, merk:p.merk, materiaal:p.materiaal, prijs:p.prijs });
   saveCart(); updateCartUI();
   const badge = document.getElementById('cartBadge');
   badge.classList.remove('pop'); void badge.offsetWidth; badge.classList.add('pop');
