@@ -592,7 +592,7 @@
       <div class="logo-text" style="display:none;font-size:1.2rem">vin<span class="logo-dot">&#9679;</span>tic</div>
     </div>
     <div class="mob-search">
-      <input type="text" placeholder="Zoek producten..." id="mobileSearchInput" oninput="onSearch(this.value);closeMobileMenu()">
+      <input type="text" placeholder="Zoek producten..." id="mobileSearchInput" onfocus="closeMobileMenu();openMobSearch()" oninput="closeMobileMenu();openMobSearch();document.getElementById('mobSearchOverlayInput').value=this.value;onMobSearchLive(this.value)">
     </div>
     <div class="mob-nav-label">Categorieën</div>
     <div id="mobNavLinks"></div>
