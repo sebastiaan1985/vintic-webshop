@@ -336,9 +336,9 @@
     @keyframes slideInRight{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
 
     /* ── SKELETON LOADER ── */
-    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+    @keyframes skeletonShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
     .skeleton-card{background:#fff;border-radius:16px;overflow:hidden;border:1px solid var(--border);}
-    .skel{background:linear-gradient(90deg,#f0f2f8 25%,#e4e8f2 50%,#f0f2f8 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;}
+    .skel{background:linear-gradient(90deg,#f0f2f8 25%,#e4e8f2 50%,#f0f2f8 75%);background-size:200% 100%;animation:skeletonShimmer 1.4s infinite;}
     .skel-img{height:200px;width:100%;}
     .skel-body{padding:1rem;}
     .skel-line{height:11px;border-radius:4px;margin-bottom:8px;}
@@ -366,10 +366,108 @@
     .load-spinner{width:28px;height:28px;border:2.5px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin .7s linear infinite;display:none;}
     #loadSentinel.loading .load-spinner{display:block;}
     @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* ── SCROLL PROGRESS ── */
+    #scrollProgress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-light));z-index:9999;width:0%;pointer-events:none;transition:width .08s;}
+
+    /* ── BUTTON MICRO-INTERACTIONS ── */
+    .btn-primary:active,.btn-gold:active,.cart-checkout-btn:active,.card-quick-add:active,.modal-cart-btn:active{transform:scale(.97)!important;transition:transform .08s!important;}
+    .qty-btn:active{transform:scale(.85);}
+    .cat-pill:active,.chip-filter:active{transform:scale(.95);}
+
+    /* ── WISHLIST ── */
+    .wish-btn{position:absolute;bottom:.5rem;right:.5rem;width:26px;height:26px;background:rgba(255,255,255,.88);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.14);transition:all .2s;z-index:5;backdrop-filter:blur(4px);padding:0;}
+    .wish-btn:hover{background:#fff;transform:scale(1.15);}
+    .wish-btn svg{width:13px;height:13px;transition:all .2s;stroke:#999;fill:none;stroke-width:2;}
+    .wish-btn.active svg{fill:#ef4444;stroke:#ef4444;}
+    @keyframes wishPop{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
+    .wish-btn.popping{animation:wishPop .3s ease;}
+    .wish-nav-btn{position:relative;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:.42rem .75rem;display:flex;align-items:center;gap:.4rem;cursor:pointer;color:rgba(255,255,255,.75);font-size:.76rem;font-weight:700;transition:all .2s;white-space:nowrap;}
+    .wish-nav-btn:hover{background:rgba(200,169,81,.15);border-color:rgba(200,169,81,.4);color:var(--gold);}
+    .wish-count{position:absolute;top:-6px;right:-6px;background:#ef4444;color:#fff;font-size:.6rem;font-weight:900;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;display:none;}
+
+    /* ── SEARCH DROPDOWN ── */
+    .search-wrap{position:relative;}
+    .search-dropdown{position:absolute;top:calc(100% + 8px);left:0;min-width:320px;background:#fff;border-radius:14px;box-shadow:0 12px 40px rgba(14,31,61,.2);border:1px solid var(--border);z-index:600;overflow:hidden;display:none;}
+    .search-dropdown.open{display:block;}
+    .search-drop-item{display:flex;align-items:center;gap:.7rem;padding:.6rem .9rem;cursor:pointer;border-bottom:1px solid var(--border);transition:background .12s;}
+    .search-drop-item:last-of-type{border-bottom:none;}
+    .search-drop-item:hover{background:var(--bg);}
+    .search-drop-img{width:38px;height:38px;object-fit:contain;border-radius:6px;background:var(--bg);flex-shrink:0;padding:2px;}
+    .search-drop-info{flex:1;min-width:0;}
+    .search-drop-name{font-size:.76rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .search-drop-meta{font-size:.62rem;color:var(--muted);}
+    .search-drop-price{font-family:'Rubik',sans-serif;font-size:.78rem;font-weight:700;color:var(--navy);flex-shrink:0;}
+    .search-drop-all{padding:.6rem .9rem;font-size:.74rem;font-weight:700;color:var(--navy);cursor:pointer;text-align:center;background:var(--bg);border-top:1px solid var(--border);}
+    .search-drop-all:hover{color:var(--gold);}
+    .search-drop-empty{padding:1rem;text-align:center;font-size:.78rem;color:var(--muted);}
+
+    /* ── CART SHIPPING BAR ── */
+    .cart-ship-bar{padding:.7rem 1.25rem;background:linear-gradient(135deg,#F0F9FF,#EFF6FF);border-bottom:1px solid #BFDBFE;}
+    .cart-ship-text{font-size:.72rem;font-weight:700;color:#1e40af;margin-bottom:.4rem;}
+    .cart-ship-track{height:5px;background:#BFDBFE;border-radius:3px;overflow:hidden;}
+    .cart-ship-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#3b82f6,#0ea5e9);transition:width .5s cubic-bezier(.4,0,.2,1);}
+    .cart-ship-done{background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border-bottom:1px solid #BBF7D0;}
+    .cart-ship-done .cart-ship-text{color:#166534;}
+    .cart-ship-done .cart-ship-fill{background:linear-gradient(90deg,#22c55e,#16a34a);}
+
+    /* ── PRICE RANGE ── */
+    .price-range-wrap{display:flex;align-items:center;gap:.6rem;padding:.3rem .5rem;background:#fff;border:1.5px solid var(--border);border-radius:999px;font-size:.72rem;font-weight:700;color:var(--navy);}
+    .price-range-wrap input[type=range]{width:100px;height:3px;cursor:pointer;accent-color:var(--navy);}
+
+    /* ── LIGHTBOX ── */
+    .lightbox{position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.93);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+    .lightbox.open{opacity:1;pointer-events:all;}
+    .lightbox img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:4px;}
+    .lightbox-close{position:absolute;top:1.25rem;right:1.25rem;width:40px;height:40px;background:rgba(255,255,255,.12);border-radius:50%;border:none;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+    .lightbox-close:hover{background:rgba(255,255,255,.25);}
+
+    /* ── RELATED PRODUCTS ── */
+    .related-section{padding:1.25rem 1.75rem 1.5rem;border-top:1px solid var(--border);}
+    .related-title{font-family:'Rubik',sans-serif;font-size:.82rem;font-weight:700;color:var(--navy);margin-bottom:.75rem;}
+    .related-track{display:flex;gap:.6rem;overflow-x:auto;scrollbar-width:none;padding-bottom:.25rem;}
+    .related-track::-webkit-scrollbar{display:none;}
+    .related-item{flex-shrink:0;width:96px;cursor:pointer;border-radius:8px;overflow:hidden;border:1px solid var(--border);background:#fff;transition:all .2s;}
+    .related-item:hover{box-shadow:0 4px 14px rgba(14,31,61,.12);transform:translateY(-2px);}
+    .related-item img{width:100%;height:72px;object-fit:contain;background:#f4f5f9;padding:3px;}
+    .related-item-price{font-size:.66rem;font-weight:700;color:var(--navy);font-family:'Rubik',sans-serif;padding:.28rem .45rem .38rem;}
+
+    /* ── EMPTY CART UPSELL ── */
+    .cart-upsell{padding:.5rem .85rem 1rem;}
+    .cart-upsell-title{font-size:.65rem;font-weight:900;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.6rem;}
+    .cart-upsell-grid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;}
+    .cart-upsell-item{background:var(--bg);border-radius:8px;border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:box-shadow .2s;}
+    .cart-upsell-item:hover{box-shadow:0 4px 12px rgba(14,31,61,.1);}
+    .cart-upsell-img{width:100%;height:64px;object-fit:contain;background:#fff;padding:3px;}
+    .cart-upsell-body{padding:.3rem .45rem .4rem;display:flex;align-items:center;justify-content:space-between;gap:.25rem;}
+    .cart-upsell-price{font-size:.66rem;font-weight:700;color:var(--navy);font-family:'Rubik',sans-serif;}
+    .cart-upsell-add{background:var(--navy);color:#fff;border:none;border-radius:4px;width:18px;height:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.85rem;line-height:1;flex-shrink:0;}
+
+    /* ── NEWSLETTER ── */
+    .newsletter-form{margin-top:1.1rem;}
+    .newsletter-label{font-size:.68rem;color:rgba(255,255,255,.45);margin-bottom:.5rem;}
+    .newsletter-row{display:flex;gap:.35rem;margin-top:.35rem;}
+    .newsletter-input{flex:1;min-width:0;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:.5rem .7rem;font-size:.76rem;color:#fff;font-family:'Nunito Sans',sans-serif;outline:none;transition:border .2s;}
+    .newsletter-input::placeholder{color:rgba(255,255,255,.3);}
+    .newsletter-input:focus{border-color:rgba(200,169,81,.5);}
+    .newsletter-btn{background:var(--gold);color:var(--navy-dark);border:none;border-radius:8px;padding:.5rem .85rem;font-size:.73rem;font-weight:800;cursor:pointer;font-family:'Rubik',sans-serif;white-space:nowrap;transition:background .2s;flex-shrink:0;}
+    .newsletter-btn:hover{background:var(--gold-light);}
+
+    /* ── HERO WORD ANIMATION ── */
+    @keyframes wordIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    .hw{display:inline-block;animation:wordIn .5s ease both;}
+
+    /* ── POPULAR SEARCH CHIPS ── */
+    .search-chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.6rem;}
+    .search-chip{display:inline-flex;align-items:center;padding:.22rem .65rem;border-radius:999px;font-size:.68rem;font-weight:700;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);color:rgba(255,255,255,.65);background:rgba(255,255,255,.05);transition:all .2s;white-space:nowrap;}
+    .search-chip:hover{border-color:var(--gold);color:var(--gold);background:rgba(200,169,81,.08);}
+
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
   </style>
 </head>
 <body>
+
+<div id="scrollProgress"></div>
 
 <!-- ══════════ PROMO BANNER ════════════════════════════════════════ -->
 <div class="promo-banner" id="promoBanner">
@@ -409,8 +507,13 @@
     <!-- Desktop Search + Cart -->
     <div class="desktop-search search-wrap flex-shrink-0 hidden md:block">
       <svg class="search-icon" style="pointer-events:auto;cursor:pointer" onclick="onSearch(document.getElementById('searchInput').value)" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input class="search-input" type="text" id="searchInput" placeholder="Zoek producten..." oninput="onSearch(this.value)" onkeydown="if(event.key==='Enter') onSearch(this.value)">
+      <input class="search-input" type="text" id="searchInput" placeholder="Zoek producten..." oninput="onSearchLive(this.value)" onkeydown="if(event.key==='Enter'){onSearch(this.value);closeSearchDropdown()}" onfocus="onSearchLive(this.value)" autocomplete="off">
+      <div class="search-dropdown" id="searchDropdown"></div>
     </div>
+    <button class="wish-nav-btn desktop-cart hidden md:flex flex-shrink-0" onclick="openWishlist()" id="wishNavBtn">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      <span class="wish-count" id="wishCount"></span>
+    </button>
     <button class="cart-btn desktop-cart hidden md:flex flex-shrink-0" onclick="openCart()">
       <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
       Winkelmandje
@@ -465,8 +568,15 @@
   <div class="max-w-7xl mx-auto px-6 py-20 relative z-10 w-full">
     <div class="max-w-xl">
       <div class="hero-tag"><svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="4"/></svg>802 Premium Producten</div>
-      <h1>Kwaliteit<br><strong>zonder <span class="accent">compromis</span></strong></h1>
+      <h1><span class="hw" style="animation-delay:.1s">Kwaliteit</span><br><strong><span class="hw" style="animation-delay:.25s">zonder</span> <span class="accent hw" style="animation-delay:.4s">compromis</span></strong></h1>
       <p class="hero-sub">Van horlogebandjes tot fietsonderdelen — Vintic levert premium accessoires voor iedere passie.</p>
+      <div class="search-chips">
+        <span class="search-chip" onclick="onSearch('Nato strap')">Nato strap</span>
+        <span class="search-chip" onclick="onSearch('Fietsbel')">Fietsbel</span>
+        <span class="search-chip" onclick="onSearch('Telefoonhouder')">Telefoonhouder</span>
+        <span class="search-chip" onclick="onSearch('Leren band')">Leren band</span>
+        <span class="search-chip" onclick="onSearch('Bidon')">Bidon</span>
+      </div>
       <div class="flex flex-wrap gap-3 mt-8">
         <button class="btn-primary" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
           <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
@@ -482,10 +592,10 @@
 <section style="background:var(--navy)">
   <div class="max-w-7xl mx-auto px-6">
     <div class="grid grid-cols-2 md:grid-cols-4">
-      <div class="stat-item"><div class="stat-num">802</div><div class="stat-label">Producten</div></div>
+      <div class="stat-item"><div class="stat-num" data-target="802" id="statProd">0</div><div class="stat-label">Producten</div></div>
       <div class="stat-item"><div class="stat-num">12</div><div class="stat-label">Categorieën</div></div>
       <div class="stat-item"><div class="stat-num">Gratis</div><div class="stat-label">Verzending</div></div>
-      <div class="stat-item"><div class="stat-num">14</div><div class="stat-label">Dagen retour</div></div>
+      <div class="stat-item"><div class="stat-num" data-target="14" id="statRetour">0</div><div class="stat-label">Dagen retour</div></div>
     </div>
   </div>
 </section>
@@ -540,6 +650,15 @@
       <span style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">Maat:</span>
     </div>
 
+    <!-- Price Range -->
+    <div class="price-range-wrap" style="margin-bottom:.75rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;">
+      <span style="font-size:.65rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">Prijs:</span>
+      <span id="priceRangeLabel" style="font-size:.72rem;font-weight:700;color:var(--navy);min-width:80px">€0 — €150</span>
+      <input type="range" id="priceMin" min="0" max="150" value="0" step="1" oninput="onPriceRange()" style="width:90px;cursor:pointer;accent-color:var(--navy)">
+      <input type="range" id="priceMax" min="0" max="150" value="150" step="1" oninput="onPriceRange()" style="width:90px;cursor:pointer;accent-color:var(--navy)">
+      <span id="priceResetBtn" style="font-size:.68rem;color:var(--muted);cursor:pointer;display:none;font-weight:600" onclick="resetPrice()">× Wis</span>
+    </div>
+
     <!-- Chip Filters -->
     <div style="margin-bottom:.75rem;display:flex;flex-wrap:wrap;align-items:center;gap:.4rem">
       <span class="chip-filter-label">Sorteer:</span>
@@ -588,6 +707,14 @@
         onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
       <div class="logo-text" style="display:none;font-size:1.1rem;margin-bottom:.85rem">vin<span class="logo-dot">&#9679;</span>tic</div>
       <p style="font-size:.78rem;line-height:1.8">Premium accessoires voor iedere passie. Gratis verzending. 14 dagen retour.</p>
+      <div class="newsletter-form">
+        <div class="newsletter-label">Blijf op de hoogte van nieuwe collecties</div>
+        <div class="newsletter-row">
+          <input class="newsletter-input" type="email" id="newsletterInput" placeholder="jouw@email.nl">
+          <button class="newsletter-btn" onclick="submitNewsletter()">Inschrijven</button>
+        </div>
+        <div id="newsletterSuccess" style="display:none;font-size:.68rem;color:#4ade80;margin-top:.4rem;">✓ Bedankt! Je staat nu op de lijst.</div>
+      </div>
       <div style="display:flex;gap:.6rem;margin-top:1.1rem">
         <button class="social-btn" title="Instagram" onclick="showInfo('social')">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
@@ -763,14 +890,42 @@ function updateCartUI(){
   if (mb) mb.textContent = total > 0 ? ` (${total})` : '';
 }
 
+const FREE_SHIP_MIN = 39;
 function renderCartItems(){
   const el = document.getElementById('cartItems');
   const footer = document.getElementById('cartFooter');
   if (!cart.length){
-    el.innerHTML = `<div class="cart-empty"><svg width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><p style="font-weight:700;color:var(--navy);margin-bottom:.25rem">Winkelmandje is leeg</p><p style="font-size:.8rem">Voeg producten toe om te beginnen</p></div>`;
+    const featured=[...PRODUCTS].filter(p=>p.fotoUrl).sort(()=>Math.random()-.5).slice(0,4);
+    el.innerHTML = `
+      <div class="cart-empty" style="padding:1.5rem 1rem .75rem">
+        <svg width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <p style="font-weight:700;color:var(--navy);margin:.5rem 0 .2rem">Winkelmandje is leeg</p>
+        <p style="font-size:.78rem">Misschien vind je dit leuk:</p>
+      </div>
+      <div class="cart-upsell">
+        <div class="cart-upsell-grid">
+          ${featured.map(p=>`
+          <div class="cart-upsell-item" onclick="closeCart();openModal('${p.ean}')">
+            <img class="cart-upsell-img" src="${p.fotoUrl}" alt="${p.titel}" onerror="this.style.background='#e8ecf4'">
+            <div class="cart-upsell-body">
+              <span class="cart-upsell-price">${fmt(itemPrice(p))}</span>
+              <button class="cart-upsell-add" onclick="event.stopPropagation();addToCart('${p.ean}')">+</button>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>`;
     footer.style.display = 'none'; return;
   }
   const sub = cart.reduce((s,i) => s + i.qty * itemPrice(i), 0);
+  const shipPct = Math.min(sub/FREE_SHIP_MIN*100,100);
+  const shipLeft = Math.max(FREE_SHIP_MIN-sub,0);
+  const shipDone = sub >= FREE_SHIP_MIN;
+  el.insertAdjacentHTML('afterbegin',`
+    <div class="cart-ship-bar ${shipDone?'cart-ship-done':''}" style="margin:-1rem -1rem .75rem;border-radius:0">
+      <div class="cart-ship-text">${shipDone?'🎉 Gratis verzending toegepast!':'Nog <strong>'+fmt(shipLeft)+'</strong> tot gratis verzending'}</div>
+      <div class="cart-ship-track"><div class="cart-ship-fill" style="width:${shipPct}%"></div></div>
+    </div>`);
+
   document.getElementById('cSubtotal').textContent = fmt(sub);
   document.getElementById('cTotal').textContent = fmt(sub);
   footer.style.display = 'block';
@@ -837,6 +992,7 @@ function getFiltered(){
   if(searchQ) list=list.filter(p=>(p.titel+p.merk+p.kleur+p.materiaal+p.omschrijving).toLowerCase().includes(searchQ));
   if(matFilter) list=list.filter(p=>p.materiaal===matFilter);
   if(kleurFilter) list=list.filter(p=>p.kleur===kleurFilter);
+  if(minPrice>0||maxPrice<150) list=list.filter(p=>p.prijs>=minPrice&&p.prijs<=maxPrice);
   if(sortOrder==='az') list.sort((a,b)=>a.titel.localeCompare(b.titel));
   if(sortOrder==='za') list.sort((a,b)=>b.titel.localeCompare(a.titel));
   if(sortOrder==='prijs-asc') list.sort((a,b)=>a.prijs-b.prijs);
@@ -895,6 +1051,9 @@ function renderCard(p){
           Snel toevoegen
         </button>
       </div>
+      <button class="wish-btn ${isWished(p.ean)?'active':''}" data-ean="${p.ean}" onclick="toggleWishlist('${p.ean}',event)" aria-label="Favoriet">
+        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </button>
     </div>
     <div class="product-body">
       <div class="product-title">${p.titel}</div>
@@ -1074,7 +1233,7 @@ function openModal(ean){
     <div class="modal-split">
       <div class="modal-gallery">
         <div class="modal-gallery-main">
-          <img id="modalMainImg" src="${mainImg}" alt="${p.titel}" onerror="this.style.opacity='.3'">
+          <img id="modalMainImg" src="${mainImg}" alt="${p.titel}" onerror="this.style.opacity='.3'" onclick="openLightbox(this.src)" style="cursor:zoom-in" title="Klik voor groot formaat">
         </div>
         <div class="modal-gallery-thumbs">${thumbsHtml}</div>
       </div>
@@ -1107,6 +1266,18 @@ function openModal(ean){
         </div>
       </div>
     </div>`;
+  const related=PRODUCTS.filter(pr=>pr.categorie===p.categorie&&pr.ean!==p.ean&&pr.fotoUrl).sort(()=>Math.random()-.5).slice(0,8);
+  const relatedHtml=related.length?`
+    <div class="related-section">
+      <div class="related-title">Anderen kochten ook</div>
+      <div class="related-track">
+        ${related.map(r=>`<div class="related-item" onclick="openModal('${r.ean}')">
+          <img src="${r.fotoUrl}" alt="${r.titel}" onerror="this.style.background='#e8ecf4'">
+          <div class="related-item-price">${fmt(r.prijs)}</div>
+        </div>`).join('')}
+      </div>
+    </div>`:'';
+  document.getElementById('modalContent').innerHTML+=relatedHtml;
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow='hidden';
 }
@@ -1289,6 +1460,137 @@ document.addEventListener('keydown', e => {
   if(e.key==='Escape'){ closeModal(); closeCart(); closeInfoModal(); closeMobileMenu(); }
 });
 
+// ═══ SCROLL PROGRESS ═════════════════════════════════════════════════
+(function(){
+  const bar=document.getElementById('scrollProgress');
+  window.addEventListener('scroll',()=>{
+    const h=document.documentElement.scrollHeight-window.innerHeight;
+    bar.style.width=(h>0?window.scrollY/h*100:0)+'%';
+  },{passive:true});
+})();
+
+// ═══ STAT COUNTER ════════════════════════════════════════════════════
+function animateCounter(el,target,duration=1200){
+  const start=performance.now();
+  function step(now){
+    const p=Math.min((now-start)/duration,1);
+    const ease=1-Math.pow(1-p,3);
+    el.textContent=Math.floor(ease*target);
+    if(p<1) requestAnimationFrame(step);
+    else el.textContent=target;
+  }
+  requestAnimationFrame(step);
+}
+(function(){
+  const stats=[
+    {id:'statProd',target:802},
+    {id:'statRetour',target:14}
+  ];
+  const statsSection=document.querySelector('[id="statProd"]')?.closest('section');
+  if(!statsSection) return;
+  const obs=new IntersectionObserver(entries=>{
+    if(entries[0].isIntersecting){
+      stats.forEach(s=>{
+        const el=document.getElementById(s.id);
+        if(el) animateCounter(el,s.target);
+      });
+      obs.disconnect();
+    }
+  },{threshold:.5});
+  obs.observe(statsSection);
+})();
+
+// ═══ WISHLIST ════════════════════════════════════════════════════════
+let wishlist=JSON.parse(localStorage.getItem('vintic_wishlist')||'[]');
+function saveWishlist(){ localStorage.setItem('vintic_wishlist',JSON.stringify(wishlist)); }
+function isWished(ean){ return wishlist.includes(ean); }
+function toggleWishlist(ean,e){
+  if(e){ e.stopPropagation(); e.preventDefault(); }
+  if(isWished(ean)) wishlist=wishlist.filter(e=>e!==ean);
+  else wishlist.push(ean);
+  saveWishlist(); updateWishUI();
+  const btn=document.querySelector(`.wish-btn[data-ean="${ean}"]`);
+  if(btn){ btn.classList.toggle('active',isWished(ean)); btn.classList.add('popping'); setTimeout(()=>btn.classList.remove('popping'),300); }
+}
+function updateWishUI(){
+  const cnt=document.getElementById('wishCount');
+  if(cnt){ cnt.textContent=wishlist.length; cnt.style.display=wishlist.length?'flex':'none'; }
+}
+function openWishlist(){
+  if(!wishlist.length){ showToast('Je hebt nog geen favorieten bewaard ♡'); return; }
+  const items=wishlist.map(ean=>PRODUCTS.find(p=>p.ean===ean)).filter(Boolean);
+  openModal(items[0].ean);
+}
+
+// ═══ SEARCH DROPDOWN ═════════════════════════════════════════════════
+function onSearchLive(val){
+  const dd=document.getElementById('searchDropdown');
+  const q=val.trim().toLowerCase();
+  if(!q){ dd.classList.remove('open'); dd.innerHTML=''; return; }
+  const results=PRODUCTS.filter(p=>(p.titel+p.merk+p.kleur+p.categorie).toLowerCase().includes(q)).slice(0,6);
+  if(!results.length){
+    dd.innerHTML=`<div class="search-drop-empty">Geen producten gevonden voor "<strong>${val}</strong>"</div>`;
+  } else {
+    dd.innerHTML=results.map(p=>`
+      <div class="search-drop-item" onclick="onSearch('${val.replace(/'/g,"\'")}');closeSearchDropdown();openModal('${p.ean}')">
+        <img class="search-drop-img" src="${p.fotoUrl||'images/'+p.foto1}" alt="" onerror="this.style.background='#e8ecf4'">
+        <div class="search-drop-info">
+          <div class="search-drop-name">${p.titel}</div>
+          <div class="search-drop-meta">${p.categorie}${p.merk&&p.merk!=='Merkloos'?' · '+p.merk:''}</div>
+        </div>
+        <span class="search-drop-price">${fmt(p.prijs)}</span>
+      </div>`).join('')+
+      `<div class="search-drop-all" onclick="onSearch('${val.replace(/'/g,"\'")}');closeSearchDropdown()">Bekijk alle resultaten voor "<strong>${val}</strong>"</div>`;
+  }
+  dd.classList.add('open');
+}
+function closeSearchDropdown(){ const dd=document.getElementById('searchDropdown'); if(dd){ dd.classList.remove('open'); dd.innerHTML=''; } }
+document.addEventListener('click',e=>{ if(!e.target.closest('.search-wrap')) closeSearchDropdown(); });
+
+// ═══ PRICE RANGE FILTER ══════════════════════════════════════════════
+let minPrice=0, maxPrice=150;
+function onPriceRange(){
+  const mn=parseInt(document.getElementById('priceMin').value);
+  const mx=parseInt(document.getElementById('priceMax').value);
+  minPrice=Math.min(mn,mx); maxPrice=Math.max(mn,mx);
+  document.getElementById('priceRangeLabel').textContent=`€${minPrice} — €${maxPrice}`;
+  const rst=document.getElementById('priceResetBtn');
+  if(rst) rst.style.display=(minPrice>0||maxPrice<150)?'inline':'none';
+  renderGrid();
+}
+function resetPrice(){
+  minPrice=0; maxPrice=150;
+  document.getElementById('priceMin').value=0;
+  document.getElementById('priceMax').value=150;
+  document.getElementById('priceRangeLabel').textContent='€0 — €150';
+  const rst=document.getElementById('priceResetBtn'); if(rst) rst.style.display='none';
+  renderGrid();
+}
+
+// ═══ LIGHTBOX ════════════════════════════════════════════════════════
+function openLightbox(src){ const lb=document.getElementById('lightbox'); document.getElementById('lightboxImg').src=src; lb.classList.add('open'); document.body.style.overflow='hidden'; }
+function closeLightbox(){ document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow=''; }
+
+// ═══ NEWSLETTER ══════════════════════════════════════════════════════
+function submitNewsletter(){
+  const inp=document.getElementById('newsletterInput');
+  if(!inp.value||!inp.value.includes('@')||!inp.value.includes('.')){ inp.style.borderColor='#ef4444'; setTimeout(()=>inp.style.borderColor='',1500); return; }
+  inp.style.display='none'; inp.nextElementSibling.style.display='none';
+  document.getElementById('newsletterSuccess').style.display='block';
+}
+
+// ═══ CAROUSEL TOUCH SWIPE ════════════════════════════════════════════
+(function(){
+  const track=document.getElementById('carouselTrack');
+  if(!track) return;
+  let startX=0;
+  track.addEventListener('touchstart',e=>{ startX=e.touches[0].clientX; },{passive:true});
+  track.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-startX;
+    if(Math.abs(dx)>40) scrollCarousel(dx<0?1:-1);
+  },{passive:true});
+})();
+
 // ═══ INIT ════════════════════════════════════════════════════════════
 updateCartUI();
 buildCatPills();
@@ -1299,6 +1601,15 @@ populateDropdowns();
 buildMatChips();
 renderGrid(true, true);
 buildRecentlyViewed();
+updateWishUI();
 </script>
+
+<!-- ══════════ LIGHTBOX ══════════════════════════════════════════════ -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <img id="lightboxImg" src="" alt="">
+</div>
 </body>
 </html>
