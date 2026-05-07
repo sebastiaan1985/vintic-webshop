@@ -148,7 +148,7 @@
     .product-img-2{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:.7rem;opacity:0;transition:opacity .35s;}
     .product-card:hover .product-img-2{opacity:1;}
     .product-badge{position:absolute;top:.55rem;left:.55rem;background:var(--navy);color:#fff;font-size:.58rem;font-weight:800;letter-spacing:.04em;padding:.16rem .5rem;border-radius:999px;text-transform:uppercase;}
-    .product-price{position:absolute;top:.55rem;right:.55rem;background:rgba(6,13,26,.85);color:var(--gold);font-family:'Rubik',sans-serif;font-size:.78rem;font-weight:700;padding:.16rem .55rem;border-radius:999px;backdrop-filter:blur(4px);}
+    .product-price{background:rgba(6,13,26,.85);color:var(--gold);font-family:'Rubik',sans-serif;font-size:.78rem;font-weight:700;padding:.16rem .55rem;border-radius:999px;backdrop-filter:blur(4px);}
     .product-body{padding:.8rem;flex:1;display:flex;flex-direction:column;gap:.35rem;}
     .product-title{font-family:'Rubik',sans-serif;font-size:.76rem;font-weight:500;line-height:1.4;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
     .product-meta{display:flex;flex-wrap:wrap;gap:.25rem;margin-top:auto;padding-top:.4rem;}
@@ -461,6 +461,31 @@
     .search-chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.6rem;}
     .search-chip{display:inline-flex;align-items:center;padding:.22rem .65rem;border-radius:999px;font-size:.68rem;font-weight:700;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);color:rgba(255,255,255,.65);background:rgba(255,255,255,.05);transition:all .2s;white-space:nowrap;}
     .search-chip:hover{border-color:var(--gold);color:var(--gold);background:rgba(200,169,81,.08);}
+
+
+    /* ── SALE PRICING ── */
+    .sale-badge{position:absolute;top:.55rem;left:.55rem;background:linear-gradient(135deg,#DC2626,#EF4444);color:#fff;font-size:.6rem;font-weight:900;letter-spacing:.03em;padding:.18rem .55rem;border-radius:999px;text-transform:uppercase;z-index:2;}
+    .price-stack{position:absolute;top:.55rem;right:.55rem;z-index:2;display:flex;flex-direction:column;align-items:flex-end;gap:.1rem;}
+    .price-original{font-family:'Rubik',sans-serif;font-size:.62rem;font-weight:500;color:rgba(255,255,255,.5);text-decoration:line-through;}
+    .price-sale{color:#EF4444!important;}
+    .modal-price-original{font-size:.9rem;color:var(--muted);text-decoration:line-through;margin-right:.5rem;}
+    .modal-price-row{display:flex;align-items:baseline;gap:.4rem;flex-wrap:wrap;}
+    .modal-sale-pct{display:inline-flex;align-items:center;background:#FEF2F2;color:#DC2626;font-size:.72rem;font-weight:800;padding:.18rem .55rem;border-radius:999px;}
+
+    /* ── COUNTDOWN TIMER ── */
+    .countdown-wrap{display:flex;align-items:center;gap:.5rem;margin-top:.75rem;padding:.55rem .85rem;background:linear-gradient(135deg,#FFF7ED,#FFEDD5);border:1px solid #FED7AA;border-radius:10px;}
+    .countdown-label{font-size:.7rem;font-weight:700;color:#C2410C;}
+    .countdown-timer{font-family:'Rubik',sans-serif;font-size:.95rem;font-weight:800;color:#C2410C;letter-spacing:.05em;min-width:60px;}
+    .countdown-sub{font-size:.62rem;color:#9A3412;font-weight:600;}
+
+    /* ── MOBILE BOTTOM NAV ── */
+    .mob-bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--navy-dark);border-top:1px solid rgba(200,169,81,.2);z-index:250;padding-bottom:env(safe-area-inset-bottom,0px);}
+    @media(max-width:768px){.mob-bottom-nav{display:flex;} body{padding-bottom:62px;}}
+    .mob-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:.18rem;padding:.55rem .25rem .5rem;background:none;border:none;color:rgba(255,255,255,.38);font-size:.55rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;position:relative;transition:color .2s;}
+    .mob-nav-item:active,.mob-nav-item.active{color:var(--gold);}
+    .mob-nav-item svg{width:20px;height:20px;transition:transform .2s;}
+    .mob-nav-item:active svg{transform:scale(.88);}
+    .mob-nav-badge{position:absolute;top:.3rem;right:calc(50% - 16px);background:#EF4444;color:#fff;font-size:.48rem;font-weight:900;min-width:14px;height:14px;border-radius:7px;display:none;align-items:center;justify-content:center;padding:0 .22rem;}
 
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
   </style>
@@ -1000,6 +1025,34 @@ function getFiltered(){
   return list;
 }
 
+// ═══ SALE DATA ═══════════════════════════════════════════════════════
+function getSaleData(p){
+  const h=parseInt(p.ean.slice(-5))%100;
+  if(h>=32) return null;
+  const pcts=[10,15,15,20,20,20,25,25,30];
+  const pct=pcts[h%pcts.length];
+  const orig=Math.round(p.prijs/(1-pct/100)*100)/100;
+  return {pct, orig};
+}
+
+// ═══ COUNTDOWN ════════════════════════════════════════════════════════
+function getCountdownStr(){
+  const now=new Date();
+  const dl=new Date(); dl.setHours(23,0,0,0);
+  if(now>=dl) dl.setDate(dl.getDate()+1);
+  const d=dl-now;
+  const h=Math.floor(d/3600000), m=Math.floor(d%3600000/60000), s=Math.floor(d%60000/1000);
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+let countdownInterval=null;
+function startCountdown(elId){
+  if(countdownInterval) clearInterval(countdownInterval);
+  const el=document.getElementById(elId);
+  if(!el) return;
+  el.textContent=getCountdownStr();
+  countdownInterval=setInterval(()=>{ if(document.getElementById(elId)) el.textContent=getCountdownStr(); else clearInterval(countdownInterval); },1000);
+}
+
 function renderSkeleton(n=12){
   return Array(n).fill(0).map(()=>`
   <div class="skeleton-card">
@@ -1036,15 +1089,18 @@ function renderCard(p){
   const klr=p.kleur?`<span class="meta-tag meta-kleur">${p.kleur}</span>`:'';
   const maat=p.maat?`<span class="meta-tag meta-maat">${p.maat}</span>`:'';
   const badge=getCardBadge(p);
-  const badgeHtml=badge?`<span class="product-badge ${badge[1]}" style="background:none;padding:0">${badge[0]}</span>`:'';
+  const sale=getSaleData(p);
   return `
   <div class="product-card fade-up" onclick="openModal('${p.ean}')">
     <div class="product-img-wrap">
       ${img1?`<img class="product-img" src="${img1}" alt="${p.titel}" loading="lazy" onerror="this.style.display='none'">`:
               '<div class="product-img" style="background:#e8ecf4"></div>'}
       ${img2!==img1?`<img class="product-img-2" src="${img2}" alt="" loading="lazy" onerror="this.style.display='none'">`:'' }
-      ${badge?`<span class="product-badge ${badge[1]}">${badge[0]}</span>`:''}
-      <span class="product-price">${fmt(p.prijs)}</span>
+      ${sale?`<span class="sale-badge">−${sale.pct}%</span>`:(badge?`<span class="product-badge ${badge[1]}">${badge[0]}</span>`:'')}
+      <div class="price-stack">
+        ${sale?`<span class="price-original">${fmt(sale.orig)}</span>`:''}
+        <span class="product-price ${sale?'price-sale':''}">${fmt(p.prijs)}</span>
+      </div>
       <div class="card-hover-overlay">
         <button class="card-quick-add" onclick="addToCart('${p.ean}',event)">
           <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
@@ -1212,6 +1268,7 @@ function buildCatShowcase(){
 function openModal(ean){
   trackViewed(ean);
   const p=PRODUCTS.find(pr=>pr.ean===ean); if(!p) return;
+  const sale=getSaleData(p);
   const imgs=p.images.slice(0,8);
   const mainImg=p.fotoUrl||(imgs[0]?`images/${imgs[0]}`:'');
   const badge=getCardBadge(p);
@@ -1244,7 +1301,18 @@ function openModal(ean){
           <span class="stars">${stars}</span>
           <span class="rating-count">${ratingVal} · ${ratingCount} beoordelingen</span>
         </div>
-        <div class="modal-price">${fmt(p.prijs)}</div>
+        <div class="modal-price-row">
+          ${sale?`<span class="modal-price-original">${fmt(sale.orig)}</span>`:''}
+          <span class="modal-price" style="margin:0">${fmt(p.prijs)}</span>
+          ${sale?`<span class="modal-sale-pct">−${sale.pct}%</span>`:''}
+        </div>
+        <div class="countdown-wrap">
+          <svg width="14" height="14" fill="none" stroke="#C2410C" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <div>
+            <div class="countdown-label">Bestel voor <span class="countdown-timer" id="modalCountdown">--:--:--</span></div>
+            <div class="countdown-sub">= morgen in huis ✓</div>
+          </div>
+        </div>
         <div class="modal-stock">
           <svg width="9" height="9" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></svg>
           Op voorraad — vandaag besteld, snel geleverd
@@ -1280,6 +1348,7 @@ function openModal(ean){
   document.getElementById('modalContent').innerHTML+=relatedHtml;
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow='hidden';
+  startCountdown('modalCountdown');
 }
 function updateModalCartBtn(){
   const btn=document.getElementById('modalCartBtn'); if(!btn) return;
@@ -1515,6 +1584,13 @@ function toggleWishlist(ean,e){
 function updateWishUI(){
   const cnt=document.getElementById('wishCount');
   if(cnt){ cnt.textContent=wishlist.length; cnt.style.display=wishlist.length?'flex':'none'; }
+  const mob=document.getElementById('mbnWishBadge');
+  if(mob){ mob.textContent=wishlist.length; mob.style.display=wishlist.length?'flex':'none'; }
+}
+function openWishlistPage(){
+  if(!wishlist.length){ showToast('Nog geen favorieten bewaard ♡'); return; }
+  const items=wishlist.map(ean=>PRODUCTS.find(p=>p.ean===ean)).filter(Boolean);
+  if(items.length) openModal(items[0].ean);
 }
 function openWishlist(){
   if(!wishlist.length){ showToast('Je hebt nog geen favorieten bewaard ♡'); return; }
@@ -1603,6 +1679,28 @@ renderGrid(true, true);
 buildRecentlyViewed();
 updateWishUI();
 </script>
+
+<!-- ══════════ MOBILE BOTTOM NAV ═══════════════════════════════════ -->
+<nav class="mob-bottom-nav" id="mobBottomNav">
+  <button class="mob-nav-item active" id="mbnHome" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Home
+  </button>
+  <button class="mob-nav-item" id="mbnSearch" onclick="document.getElementById('mobileSearchInput').focus();toggleMobileMenu()">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    Zoeken
+  </button>
+  <button class="mob-nav-item" id="mbnWish" onclick="openWishlistPage()">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    Favoriet
+    <span class="mob-nav-badge" id="mbnWishBadge"></span>
+  </button>
+  <button class="mob-nav-item" id="mbnCart" onclick="openCart()">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    Mandje
+    <span class="mob-nav-badge" id="mbnCartBadge"></span>
+  </button>
+</nav>
 
 <!-- ══════════ LIGHTBOX ══════════════════════════════════════════════ -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
