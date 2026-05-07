@@ -463,6 +463,30 @@
     .search-chip:hover{border-color:var(--gold);color:var(--gold);background:rgba(200,169,81,.08);}
 
 
+
+    /* ── MOBILE SEARCH OVERLAY ── */
+    .mob-search-overlay{display:none;position:fixed;inset:0;background:#fff;z-index:900;flex-direction:column;}
+    .mob-search-hdr{display:flex;align-items:center;gap:.75rem;padding:.85rem 1rem;background:var(--navy-dark);border-bottom:2px solid var(--gold);}
+    .mob-search-hdr input{flex:1;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:.6rem 1rem;font-size:.95rem;color:#fff;font-family:'Nunito Sans',sans-serif;outline:none;}
+    .mob-search-hdr input::placeholder{color:rgba(255,255,255,.4);}
+    .mob-search-close{background:none;border:none;color:rgba(255,255,255,.7);font-size:1.4rem;line-height:1;cursor:pointer;padding:.2rem .4rem;flex-shrink:0;}
+    .mob-search-results{flex:1;overflow-y:auto;padding:.5rem 0;}
+    .mob-search-item{display:flex;align-items:center;gap:.85rem;padding:.75rem 1rem;border-bottom:1px solid var(--border);cursor:pointer;}
+    .mob-search-item:active{background:#f5f6fa;}
+    .mob-search-img{width:58px;height:58px;object-fit:contain;border-radius:8px;background:#f0f2f8;flex-shrink:0;}
+    .mob-search-info{flex:1;min-width:0;}
+    .mob-search-name{font-size:.82rem;font-weight:600;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.35;}
+    .mob-search-prices{display:flex;align-items:baseline;gap:.4rem;margin-top:.25rem;}
+    .mob-search-orig{font-size:.72rem;color:var(--muted);text-decoration:line-through;}
+    .mob-search-price{font-family:'Rubik',sans-serif;font-size:.88rem;font-weight:700;color:var(--navy);}
+    .mob-search-price.is-sale{color:#EF4444;}
+    .mob-search-actions{display:flex;flex-direction:column;gap:.35rem;flex-shrink:0;}
+    .mob-search-btn-view{background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:.72rem;font-weight:700;padding:.35rem .7rem;cursor:pointer;white-space:nowrap;}
+    .mob-search-btn-cart{background:var(--gold);color:var(--navy-dark);border:none;border-radius:8px;font-size:.8rem;font-weight:900;padding:.35rem .7rem;cursor:pointer;}
+    .mob-search-empty{padding:2rem 1rem;text-align:center;color:var(--muted);font-size:.9rem;}
+    .mob-search-all{padding:.9rem 1rem;text-align:center;font-size:.82rem;color:var(--navy);font-weight:700;border-top:2px solid var(--border);cursor:pointer;}
+    .mob-search-all:active{background:#f5f6fa;}
+
     /* ── SALE PRICING ── */
     .sale-badge{position:absolute;top:.55rem;left:.55rem;background:linear-gradient(135deg,#DC2626,#EF4444);color:#fff;font-size:.6rem;font-weight:900;letter-spacing:.03em;padding:.18rem .55rem;border-radius:999px;text-transform:uppercase;z-index:2;}
     .price-stack{position:absolute;top:.55rem;right:.55rem;z-index:2;display:flex;flex-direction:column;align-items:flex-end;gap:.1rem;}
@@ -1620,6 +1644,49 @@ function onSearchLive(val){
   }
   dd.classList.add('open');
 }
+
+// ═══ MOBILE SEARCH OVERLAY ═══════════════════════════════════════════
+function openMobSearch(){
+  const ov=document.getElementById('mobSearchOverlay');
+  ov.style.display='flex';
+  setTimeout(()=>document.getElementById('mobSearchOverlayInput').focus(),80);
+}
+function closeMobSearch(){
+  const ov=document.getElementById('mobSearchOverlay');
+  ov.style.display='none';
+  document.getElementById('mobSearchOverlayInput').value='';
+  document.getElementById('mobSearchResults').innerHTML='<div class="mob-search-empty">Voer een zoekterm in...</div>';
+}
+function onMobSearchLive(val){
+  const q=val.trim().toLowerCase();
+  const el=document.getElementById('mobSearchResults');
+  if(!q){ el.innerHTML='<div class="mob-search-empty">Voer een zoekterm in...</div>'; return; }
+  const results=PRODUCTS.filter(p=>(p.titel+p.merk+p.kleur+p.categorie).toLowerCase().includes(q)).slice(0,20);
+  if(!results.length){
+    el.innerHTML=`<div class="mob-search-empty">Geen resultaten voor "<strong>${val}</strong>"</div>`;
+    return;
+  }
+  el.innerHTML=results.map(p=>{
+    const sale=getSaleData(p);
+    const safeVal=val.replace(/'/g,"\\'");
+    return `<div class="mob-search-item">
+      <img class="mob-search-img" src="${p.fotoUrl||'images/'+p.foto1}" alt="" onerror="this.style.background='#e8ecf4'" loading="lazy">
+      <div class="mob-search-info">
+        <div class="mob-search-name">${p.titel}</div>
+        <div class="mob-search-prices">
+          ${sale?`<span class="mob-search-orig">${fmt(sale.orig)}</span>`:''}
+          <span class="mob-search-price${sale?' is-sale':''}">${fmt(p.prijs)}</span>
+        </div>
+      </div>
+      <div class="mob-search-actions">
+        <button class="mob-search-btn-view" onclick="openModal('${p.ean}');closeMobSearch()">Bekijk</button>
+        <button class="mob-search-btn-cart" onclick="addToCart('${p.ean}',event)" title="Toevoegen aan mandje">+</button>
+      </div>
+    </div>`;
+  }).join('')+`<div class="mob-search-all" onclick="onSearch('${val.replace(/'/g,"\\'")}');closeMobSearch()">Alle resultaten voor &ldquo;${val}&rdquo; &rarr;</div>`;
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&document.getElementById('mobSearchOverlay').style.display==='flex') closeMobSearch(); });
+
 function closeSearchDropdown(){ const dd=document.getElementById('searchDropdown'); if(dd){ dd.classList.remove('open'); dd.innerHTML=''; } }
 document.addEventListener('click',e=>{ if(!e.target.closest('.search-wrap')) closeSearchDropdown(); });
 
@@ -1686,7 +1753,7 @@ updateWishUI();
     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     Home
   </button>
-  <button class="mob-nav-item" id="mbnSearch" onclick="document.getElementById('mobileSearchInput').focus();toggleMobileMenu()">
+  <button class="mob-nav-item" id="mbnSearch" onclick="openMobSearch()">
     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
     Zoeken
   </button>
@@ -1701,6 +1768,19 @@ updateWishUI();
     <span class="mob-nav-badge" id="mbnCartBadge"></span>
   </button>
 </nav>
+
+
+<!-- ══════════ MOBILE SEARCH OVERLAY ════════════════════════════════ -->
+<div class="mob-search-overlay" id="mobSearchOverlay">
+  <div class="mob-search-hdr">
+    <svg width="17" height="17" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="mobSearchOverlayInput" placeholder="Zoek producten, merken, kleuren..." autocomplete="off" oninput="onMobSearchLive(this.value)" onkeydown="if(event.key==='Escape')closeMobSearch()">
+    <button class="mob-search-close" onclick="closeMobSearch()">&#x2715;</button>
+  </div>
+  <div class="mob-search-results" id="mobSearchResults">
+    <div class="mob-search-empty">Voer een zoekterm in...</div>
+  </div>
+</div>
 
 <!-- ══════════ LIGHTBOX ══════════════════════════════════════════════ -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
